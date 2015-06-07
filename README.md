@@ -1,5 +1,7 @@
 # Postgres_Heroku
 
+Postgres application example on Heroku
+
 ## Heroku server:
 
 Server address on Heroku (using Postgres): https://tranquil-shore-7404.herokuapp.com
