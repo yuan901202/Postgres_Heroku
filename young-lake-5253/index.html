@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NWEN 304 Quoting System by Tianfu_Yuan</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+<script src="shake.js"></script>
+
+</head>
+<body>
+<!-- Start of first page -->
+<div data-role="page" id="foo">
+
+    <div data-role="header">
+        <h1>NWEN 304 Quoting System</h1>
+    </div><!-- /header -->
+
+    <div role="main" class="ui-content">
+
+        <label for="text-1">Get a quote:</label>
+        <input name="text-1" id="text1" value="1" type="text">
+        <input type="submit" value="Submit Button" id="button1" />
+
+	<!-- put the result here -->
+	<div id="result"  class="functions"></div>
+
+        <label for="text-2">Add a new quote:</label>
+        <label for="author">New author:</lable>
+        <input name="text-2-author" id="text2-author" value="someone" type="text">
+        <label for="text">New text:</lable>
+        <input name="text-2-text" id="text2-text" value="some text" type="text">
+        <input type="submit" value="Submit Button" id="button2" />
+
+  <div id="addto" class="functions"></div>
+
+        <label for="text-3">Delete a quote (with id):</label>
+        <label for="quote-id">Quote ID:</label>
+        <input name="text-3-id" id="text3-id" value="1" type="text">
+        <input type="submit" value="Submit Button" id="button3" />
+
+  <div id="deletefrom" class="functions"></div>
+
+    </div><!-- /content -->
+
+    <div data-role="footer">
+        <h4>Page Footer</h4>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<script type="text/javascript">
+$(document).bind('pageinit', function() {
+
+  //alert("hello");
+
+  $.ajaxSetup ({
+    cache: false
+  });
+
+  //get a quote from server
+  $( "#button1" ).bind( "click", function(event, ui) {
+    var q = $("#text1").val();
+    alert("Click "+q);
+    var jsonUrl = "https://young-lake-5253.herokuapp.com/quote/"+q;
+    alert("Fetching result from "+jsonUrl);
+    $.get(jsonUrl, function(data) {
+      alert(data.author);
+      $("#result").html("<p><b>"+data.author+" said "+data.text+"</b></p>")
+    }, 'json').fail(function(result) {alert("fdfdsds "+result.status); });
+  });
+
+  //post a new quote to server
+  $( "#button2" ).bind( "click", function(event, ui) {
+    alert("Posting a new quote");
+    var jsonUrl = "https://young-lake-5253.herokuapp.com/quote";
+    var newQuote = { "author" : document.getElementById("text2-author").value, "text" : document.getElementById("text2-text").value};
+    $.post(jsonUrl, newQuote, function(data) {
+      alert("Added quote number " + data.pos + " " + data.author + " " + data.text);
+    }, 'json');
+  });
+  
+  //delete a quote from server
+  $( "#button3" ).bind( "click", function(event, ui) {
+    var q = $("#text3-id").val();
+    alert("You are delete a quote with id"+q);
+    var jsonUrl = "https://young-lake-5253.herokuapp.com/quote/delete/"+q;
+    alert("Deleting quote from "+jsonUrl);
+    $.delete(jsonUrl, function(data) {
+      alert(data.author);
+      $("#deletefrom").html("<p><b>"+"Deleted quote number " + data.pos + " " + data.author + " " + data.text+"</b></p>")
+    }, 'json');
+  });
+  
+});
+</script>
+</body>
+</html>
